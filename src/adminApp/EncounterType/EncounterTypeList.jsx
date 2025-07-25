@@ -117,12 +117,13 @@ const EncounterTypeList = () => {
   );
 
   const fetchData = useCallback(
-    ({ page, pageSize, orderBy, orderDirection }) =>
+    ({ page, pageSize, orderBy, orderDirection, globalFilter }) =>
       new Promise(resolve => {
         const validSortFields = ["name"];
         let apiUrl = `/web/encounterType?size=${encodeURIComponent(
           pageSize
         )}&page=${encodeURIComponent(page)}`;
+        if (globalFilter) apiUrl += `&name=${encodeURIComponent(globalFilter)}`;
         if (orderBy && validSortFields.includes(orderBy)) {
           apiUrl += `&sort=${encodeURIComponent(orderBy)},${encodeURIComponent(
             orderDirection
@@ -223,7 +224,7 @@ const EncounterTypeList = () => {
           pageSize: 10,
           sorting: true,
           debounceInterval: 500,
-          search: false,
+          search: true,
           rowStyle: ({ original }) => ({
             backgroundColor: original.voided ? "#DBDBDB" : "#fff"
           })

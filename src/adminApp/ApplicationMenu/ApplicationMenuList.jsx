@@ -58,18 +58,19 @@ const ApplicationMenuList = () => {
   );
 
   const fetchData = useMemo(
-    () => ({ page, pageSize }) =>
-      new Promise(resolve =>
-        ApplicationMenuService.getMenuList().then(response => {
-          const data = response.content || [];
-          const start = page * pageSize;
-          const paginatedData = data.slice(start, start + pageSize);
+    () => ({ page, pageSize, globalFilter }) =>
+      new Promise(resolve => {
+        let queryParams = `?page=${page}&size=${pageSize}`;
+        if (globalFilter) {
+          queryParams += `&displayKey=${encodeURIComponent(globalFilter)}`;
+        }
+        ApplicationMenuService.getMenuList(queryParams).then(response => {
           resolve({
-            data: paginatedData,
-            totalCount: data.length
+            data: response.data || [],
+            totalCount: response.totalCount || 0
           });
-        })
-      ),
+        });
+      }),
     []
   );
 
@@ -146,7 +147,7 @@ const ApplicationMenuList = () => {
             pageSize: 10,
             sorting: false,
             debounceInterval: 500,
-            search: false,
+            search: true,
             rowStyle: () => ({
               backgroundColor: "#fff"
             })

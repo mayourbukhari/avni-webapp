@@ -129,7 +129,22 @@ const SubjectSearchTable = ({ searchRequest, organisationConfigs }) => {
               Cell: ({ row }) =>
                 row.original.dateOfBirth
                   ? AgeUtil.getDisplayAge(row.original.dateOfBirth, i18n)
-                  : ""
+                  : "",
+              // Custom sorting function for age - sort by date of birth in reverse order
+              // so that older birth dates (older people) come first when sorting desc
+              sortingFn: (rowA, rowB, columnId) => {
+                const dateA = rowA.original.dateOfBirth;
+                const dateB = rowB.original.dateOfBirth;
+                
+                // Handle null/undefined dates
+                if (!dateA && !dateB) return 0;
+                if (!dateA) return 1;  // Put rows without dates at the end
+                if (!dateB) return -1;
+                
+                // For age sorting, we want newer birth dates (younger people) to have higher values
+                // when sorting ascending, so we reverse the date comparison
+                return new Date(dateB) - new Date(dateA);
+              }
             }
           ]
         : []),

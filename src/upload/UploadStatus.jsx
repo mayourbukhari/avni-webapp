@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
   Box,
+  TableContainer,
   TablePagination,
   Button
 } from "@mui/material";
@@ -72,82 +73,84 @@ const UploadStatus = () => {
         <Refresh style={{ marginRight: 5 }} />
         {"REFRESH STATUS"}
       </StyledButton>
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="right">Execution Id</TableCell>
-            <StyledFileNameCell>File name</StyledFileNameCell>
-            <TableCell align="right">Download Input</TableCell>
-            <TableCell align="right">Type</TableCell>
-            <StyledDateCell align="right">Created at</StyledDateCell>
-            <StyledDateCell align="right">Started at</StyledDateCell>
-            <StyledDateCell align="right">Ended at</StyledDateCell>
-            <TableCell align="right">Status</TableCell>
-            <TableCell align="right">{"Rows/File read"}</TableCell>
-            <TableCell align="right">{"Rows/File completed"}</TableCell>
-            <TableCell align="right">{"Rows/File skipped"}</TableCell>
-            <TableCell align="right">Failure</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {map(get(statuses, "content"), jobStatus => (
-            <TableRow key={jobStatus.uuid}>
-              <TableCell align="right">{jobStatus.executionId}</TableCell>
-              <StyledFileNameCell component="th" scope="jobStatus">
-                {jobStatus.fileName}
-              </StyledFileNameCell>
-              <TableCell align="right">
-                <FileDownloadButton
-                  url={`/import/inputFile?filePath=${jobStatus.s3Key}`}
-                  filename={jobStatus.fileName}
-                  disabled={includes(["STARTING"], jobStatus.status)}
-                />
-              </TableCell>
-              <TableCell align="right">
-                {staticTypesWithStaticDownload.getName(jobStatus.type) ||
-                  staticTypesWithDynamicDownload.getName(jobStatus.type) ||
-                  uploadTypes.getName(jobStatus.type) ||
-                  jobStatus.type}
-              </TableCell>
-              <StyledDateCell align="right">
-                {formatDate(jobStatus.createTime)}
-              </StyledDateCell>
-              <StyledDateCell align="right">
-                {formatDate(jobStatus.startTime)}
-              </StyledDateCell>
-              <StyledDateCell align="right">
-                {formatDate(jobStatus.endTime)}
-              </StyledDateCell>
-              <TableCell align="right">
-                {jobStatus.status === "COMPLETED" && 0 < jobStatus.skipped
-                  ? "Completed with errors"
-                  : capitalize(jobStatus.status)}
-              </TableCell>
-              <TableCell align="right">{jobStatus.total}</TableCell>
-              <TableCell align="right">{jobStatus.completed}</TableCell>
-              <TableCell align="right">{jobStatus.skipped}</TableCell>
-              <TableCell align="right">
-                {jobStatus.status === "FAILED" || 0 < jobStatus.skipped ? (
-                  <FileDownloadButton
-                    url={`/import/errorfile?jobUuid=${jobStatus.uuid}`}
-                    filename={`errors-${jobStatus.fileName.replace(
-                      ".zip",
-                      ".csv"
-                    )}`}
-                    disabled={includes(
-                      ["STARTING", "STARTED"],
-                      jobStatus.status
-                    )}
-                    buttonColor={"error"}
-                  />
-                ) : (
-                  <div />
-                )}
-              </TableCell>
+      <TableContainer sx={{ maxWidth: "100%", overflowX: "auto" }}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="right">Execution Id</TableCell>
+              <StyledFileNameCell>File name</StyledFileNameCell>
+              <TableCell align="right">Download Input</TableCell>
+              <TableCell align="right">Type</TableCell>
+              <StyledDateCell align="right">Created at</StyledDateCell>
+              <StyledDateCell align="right">Started at</StyledDateCell>
+              <StyledDateCell align="right">Ended at</StyledDateCell>
+              <TableCell align="right">Status</TableCell>
+              <TableCell align="right">{"Rows/File read"}</TableCell>
+              <TableCell align="right">{"Rows/File completed"}</TableCell>
+              <TableCell align="right">{"Rows/File skipped"}</TableCell>
+              <TableCell align="right">Failure</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {map(get(statuses, "content"), jobStatus => (
+              <TableRow key={jobStatus.uuid}>
+                <TableCell align="right">{jobStatus.executionId}</TableCell>
+                <StyledFileNameCell component="th" scope="jobStatus">
+                  {jobStatus.fileName}
+                </StyledFileNameCell>
+                <TableCell align="right">
+                  <FileDownloadButton
+                    url={`/import/inputFile?filePath=${jobStatus.s3Key}`}
+                    filename={jobStatus.fileName}
+                    disabled={includes(["STARTING"], jobStatus.status)}
+                  />
+                </TableCell>
+                <TableCell align="right">
+                  {staticTypesWithStaticDownload.getName(jobStatus.type) ||
+                    staticTypesWithDynamicDownload.getName(jobStatus.type) ||
+                    uploadTypes.getName(jobStatus.type) ||
+                    jobStatus.type}
+                </TableCell>
+                <StyledDateCell align="right">
+                  {formatDate(jobStatus.createTime)}
+                </StyledDateCell>
+                <StyledDateCell align="right">
+                  {formatDate(jobStatus.startTime)}
+                </StyledDateCell>
+                <StyledDateCell align="right">
+                  {formatDate(jobStatus.endTime)}
+                </StyledDateCell>
+                <TableCell align="right">
+                  {jobStatus.status === "COMPLETED" && 0 < jobStatus.skipped
+                    ? "Completed with errors"
+                    : capitalize(jobStatus.status)}
+                </TableCell>
+                <TableCell align="right">{jobStatus.total}</TableCell>
+                <TableCell align="right">{jobStatus.completed}</TableCell>
+                <TableCell align="right">{jobStatus.skipped}</TableCell>
+                <TableCell align="right">
+                  {jobStatus.status === "FAILED" || 0 < jobStatus.skipped ? (
+                    <FileDownloadButton
+                      url={`/import/errorfile?jobUuid=${jobStatus.uuid}`}
+                      filename={`errors-${jobStatus.fileName.replace(
+                        ".zip",
+                        ".csv"
+                      )}`}
+                      disabled={includes(
+                        ["STARTING", "STARTED"],
+                        jobStatus.status
+                      )}
+                      buttonColor={"error"}
+                    />
+                  ) : (
+                    <div />
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <TablePagination
         rowsPerPageOptions={[5]}
         component="div"

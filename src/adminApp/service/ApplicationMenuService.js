@@ -8,8 +8,8 @@ class ApplicationMenuService {
     return http.getData(`${menuItemEndpoint}/${id}`).then(result => AdminMenuItem.fromResource(result));
   }
 
-  static getMenuList() {
-    return http.getPageData("menuItemWebResponses", menuItemEndpoint);
+  static getMenuList(queryParams = "") {
+    return http.getPageData("menuItemWebResponses", `${menuItemEndpoint}${queryParams}`);
   }
 
   static put(menuItem) {
@@ -18,6 +18,10 @@ class ApplicationMenuService {
 
   static post(menuItem) {
     return http.post(menuItemEndpoint, menuItem);
+  }
+
+  static deleteMenu(id) {
+    return http.delete(`${menuItemEndpoint}/${id}`);
   }
 }
 

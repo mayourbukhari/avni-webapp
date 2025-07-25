@@ -230,7 +230,12 @@ const CreateEditConcept = ({ isCreatePage = false }) => {
         e.target.value !== "Location";
       setConcept(prev => {
         const c = { ...prev };
-        c[stateHandler] = replace(e.target.value, "|", "");
+        // For concept name, only remove pipe characters but preserve spaces
+        if (stateHandler === "name") {
+          c[stateHandler] = replace(e.target.value, /\|/g, "");
+        } else {
+          c[stateHandler] = replace(e.target.value, "|", "");
+        }
         if (resetKeyValues) c.keyValues = [];
         return c;
       });

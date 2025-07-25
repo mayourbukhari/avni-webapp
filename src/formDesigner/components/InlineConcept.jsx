@@ -70,7 +70,7 @@ function InlineConcept(props) {
               props.handleGroupElementChange(
                 props.groupIndex,
                 "inlineConceptName",
-                replace(event.target.value, "|", ""),
+                replace(event.target.value, /\|/g, ""),
                 props.index
               )
             }

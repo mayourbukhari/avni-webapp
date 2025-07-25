@@ -529,6 +529,16 @@ const ConceptSyncAttribute = ({ subjectType, syncAttributeName }) => {
           some(selectedSyncAttributeValueIds, y => x.id === y)
         );
 
+        // Auto-populate sync attribute concept for new users
+        useEffect(() => {
+          if (syncAttributeConcept && isEmpty(syncAttributeConceptUUID)) {
+            setValue(
+              `syncSettings.${subjectType.name}.${syncAttributeName}`,
+              syncAttributeConcept.uuid
+            );
+          }
+        }, [syncAttributeConcept, syncAttributeConceptUUID, setValue, subjectType.name, syncAttributeName]);
+
         useEffect(() => {
           if (isEmpty(syncAttributeConceptUUID)) {
             setAnswerConcepts([]);
@@ -652,6 +662,7 @@ const UserForm = ({ edit, nameSuffix, organisation, ...props }) => {
   const [syncAttributesData, setSyncAttributesData] = useState({
     subjectTypes: []
   });
+  const { setValue } = useFormContext();
   const isSyncSettingsRequired =
     syncAttributesData.subjectTypes.length > 0 ||
     syncAttributesData.isAnySubjectTypeDirectlyAssignable;
@@ -693,6 +704,26 @@ const UserForm = ({ edit, nameSuffix, organisation, ...props }) => {
       isMounted = false;
     };
   }, []);
+
+  // Initialize sync settings for new users when sync attributes data is loaded
+  useEffect(() => {
+    if (!edit && syncAttributesData.subjectTypes.length > 0) {
+      syncAttributesData.subjectTypes.forEach(subjectType => {
+        if (subjectType.syncAttribute1) {
+          setValue(
+            `syncSettings.${subjectType.name}.syncAttribute1`,
+            subjectType.syncAttribute1.uuid
+          );
+        }
+        if (subjectType.syncAttribute2) {
+          setValue(
+            `syncSettings.${subjectType.name}.syncAttribute2`,
+            subjectType.syncAttribute2.uuid
+          );
+        }
+      });
+    }
+  }, [edit, syncAttributesData.subjectTypes, setValue]);
 
   const sanitizeProps = ({ record, resource, save }) => ({
     record,

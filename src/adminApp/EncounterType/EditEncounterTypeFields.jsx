@@ -69,7 +69,10 @@ const EditEncounterTypeFields = ({
         autoComplete="off"
         value={encounterType.name}
         onChange={event =>
-          dispatch({ type: "name", payload: event.target.value })
+          dispatch({ 
+            type: "name", 
+            payload: event.target.value.replace(/\s+/g, "") 
+          })
         }
         toolTipKey={"APP_DESIGNER_ENCOUNTER_TYPE_NAME"}
       />

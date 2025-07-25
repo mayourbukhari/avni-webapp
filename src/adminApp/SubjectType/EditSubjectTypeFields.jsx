@@ -39,7 +39,10 @@ const EditSubjectTypeFields = props => {
           disabled={isUserSubjectType && source === "edit"}
           value={subjectType.name}
           onChange={event =>
-            dispatch({ type: "name", payload: event.target.value })
+            dispatch({ 
+              type: "name", 
+              payload: event.target.value.replace(/\s+/g, "") 
+            })
           }
           toolTipKey={"APP_DESIGNER_SUBJECT_TYPE_NAME"}
         />

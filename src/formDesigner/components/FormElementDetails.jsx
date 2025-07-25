@@ -262,7 +262,7 @@ const FormElementDetails = ({
               rest.handleGroupElementChange(
                 groupIndex,
                 "name",
-                replace(event.target.value, "|", ""),
+                replace(event.target.value, /\|/g, ""),
                 index
               )
             }

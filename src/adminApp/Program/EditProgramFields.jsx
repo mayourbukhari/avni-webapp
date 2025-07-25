@@ -56,7 +56,10 @@ const EditProgramFields = props => {
         required
         value={program.name}
         onChange={event =>
-          dispatch({ type: "name", payload: event.target.value })
+          dispatch({ 
+            type: "name", 
+            payload: event.target.value.replace(/\s+/g, "") 
+          })
         }
         toolTipKey={"APP_DESIGNER_PROGRAM_NAME"}
       />

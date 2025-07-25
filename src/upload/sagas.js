@@ -17,7 +17,16 @@ export function* getUploadTypesWatcher() {
 
 export function* getUploadTypesWorker() {
   const valueFromApi = yield call(api.fetchUploadTypes);
-  yield put(setUploadTypes(valueFromApi));
+  // Filter out voided forms from upload types
+  const filteredUploadTypes = {};
+  Object.keys(valueFromApi).forEach(key => {
+    const uploadType = valueFromApi[key];
+    // Only include non-voided forms
+    if (!uploadType.voided) {
+      filteredUploadTypes[key] = uploadType;
+    }
+  });
+  yield put(setUploadTypes(filteredUploadTypes));
 }
 
 export default function* main() {
